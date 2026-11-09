@@ -36,7 +36,9 @@ ISC is compatible with the GPL, so the combined work is distributed under GPL-3.
 | Microsoft C runtime | Microsoft Visual Studio licence | Linked statically into the Windows DLLs by `build.bat` (`/MT`). It is a system library under GPL-3.0 section 1. |
 | Xlib (libX11) | MIT/X11 | Linked dynamically by the Linux GUI. |
 | lilv, from the Ardour 9 install | ISC | Loaded at run time by `test/lilv_check.c` only. Not shipped in the bundle. |
-| Win32 user32/gdi32, C maths library | System libraries | Linked dynamically. |
+| Win32 user32/gdi32, macOS Cocoa framework, C maths library | System libraries | Linked dynamically. |
+| GCC/Clang runtime (`-static-libgcc` on MinGW) | GPL with the GCC Runtime Library Exception | Only when built with MinGW. |
+| lilv-utils (`lv2info`), Xvfb | ISC, MIT/X11 | Used by the Linux CI checks only. Not shipped. |
 
 ## Circuit and reference sources
 

@@ -4,7 +4,30 @@ A circuit-modelled LV2 guitar amplifier, built from the schematic titled **"1997
 
 ![The GUI](docs/gui.png)
 
-Mono in, mono out, with a Windows GUI. The code also has a Linux (X11) GUI layer and a CMake build for Linux and macOS, but those have not been built or tested yet. GPL-3.0-or-later.
+Mono in, mono out, with its own GUI on Windows, macOS and Linux. GPL-3.0-or-later.
+
+## Download
+
+Ready-made builds are on the [Releases page](https://github.com/evadavevadave/davidian-humble-overdraft/releases):
+
+| Download | For |
+|---|---|
+| `…-windows-x64.zip` | Windows 10/11, 64-bit hosts |
+| `…-macos-universal.zip` | macOS 10.13 or later, Apple silicon and Intel |
+| `…-linux-x64.zip` | 64-bit Intel/AMD Linux (glibc 2.35 or later) |
+| `…-linux-arm64.zip` | 64-bit ARM Linux, e.g. Raspberry Pi 4/5 (glibc 2.35 or later) |
+
+Unzip, copy the `humble_overdraft.lv2` folder into your LV2 folder and restart your host:
+
+- Windows: `%APPDATA%\LV2` (create it if it doesn't exist)
+- macOS: `~/Library/Audio/Plug-Ins/LV2`
+- Linux: `~/.lv2`
+
+The macOS build isn't notarized, so macOS may block it after download. Run this once in Terminal after copying:
+
+```bash
+xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/LV2/humble_overdraft.lv2
+```
 
 ## Controls
 
@@ -54,43 +77,51 @@ The Koren 12AX7A fit draws about 15% less current than the tubes measured for th
 
 ## Build
 
-### Windows
+The code is plain C11 with no dependencies beyond the platform's window system: Win32 on Windows, Cocoa on macOS, Xlib on Linux and BSD. No LV2 SDK is needed. Each build puts the bundle in `build/humble_overdraft.lv2`.
 
-Needs Visual Studio with the C compiler (2026, version 18, is the default in `build.bat`; edit `VCVARS` there for another version).
+### Windows (Visual Studio)
+
+Needs Visual Studio 2019 or later with the C++ workload. `build.bat` finds it on its own.
 
 ```bash
 build.bat
 ```
 
-This creates `build\humble_overdraft.lv2`. Copy that folder to `%APPDATA%\LV2` or `%COMMONPROGRAMFILES%\LV2`.
+### macOS, Linux, BSD, MinGW
 
-### CMake (any platform)
+Needs a C compiler and `make`. On Linux, also the X11 headers (`libx11-dev` on Debian/Ubuntu). On macOS, the Xcode command-line tools; the build is universal (Apple silicon and Intel).
 
 ```bash
-cmake -B build-cmake -DCMAKE_BUILD_TYPE=Release
+make
 ```
 
 ```bash
-cmake --build build-cmake
+make install
 ```
+
+`make install` copies the bundle to your user LV2 folder.
 
 ## Tests
 
-After `build.bat`:
+Windows:
 
 ```bash
-build-test\test_dsp.exe
+build.bat test
 ```
+
+macOS, Linux:
 
 ```bash
-build-test\ui_render.exe docs\panel.bmp
+make test
 ```
 
-```bash
-build-test\lilv_check.exe build
-```
+- `test_dsp` checks operating points, every passive network against an independent frequency-domain solution (agreement within 0.03 dB), the direction of every tone control, distortion against drive, presence, bypass latency, silence, all sample rates and CPU cost (about 20% of one core at 48 kHz on the development machine).
+- `ui_render` draws the panel to a BMP file.
+- `ui_check` (Windows) and `ui_check_mac` (macOS) load the GUI the way a host does, drive it with mouse events and check the values it sends back.
+- `load_check` (Linux, macOS) loads the plugin and GUI with `dlopen` and runs them.
+- `lilv_check` (Windows) validates the bundle with the LV2 parser from an Ardour 9 install: `build-test\lilv_check.exe build`. On Linux, CI checks it with `lv2info`.
 
-`test_dsp` checks operating points, every passive network against an independent frequency-domain solution (agreement within 0.03 dB), the direction of every tone control, distortion against drive, presence, bypass latency, silence, all sample rates and CPU cost (about 19% of one core at 48 kHz on the development machine). `lilv_check` loads the bundle with the LV2 parser from Ardour 9, validates it and runs it.
+GitHub Actions runs all of these on Windows, macOS, Linux x64 and Linux arm64 for every push (see `.github/workflows/build.yml`). Pushing a `v*` tag publishes a release with a zip for each platform.
 
 ## Licence
 

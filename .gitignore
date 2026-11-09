@@ -1,6 +1,5 @@
 build/
 build-test/
-build-cmake/
 *.obj
 *.pdb
 *.ilk

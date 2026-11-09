@@ -10,9 +10,31 @@
 #include "oversample.h"
 #include "ports.h"
 
+/* Flush denormals to zero while processing, so decaying filter states can't stall the CPU. */
 #if defined(_M_X64) || defined(__x86_64__) || defined(__SSE2__)
 #    include <xmmintrin.h>
-#    define HAVE_FTZ 1
+typedef unsigned FpState;
+static FpState fp_enter(void)
+{
+    const FpState s = _mm_getcsr();
+    _mm_setcsr(s | 0x8040); /* FTZ | DAZ */
+    return s;
+}
+static void fp_leave(FpState s) { _mm_setcsr(s); }
+#elif defined(__aarch64__) && (defined(__GNUC__) || defined(__clang__))
+typedef unsigned long long FpState;
+static FpState fp_enter(void)
+{
+    FpState s;
+    __asm__ __volatile__("mrs %0, fpcr" : "=r"(s));
+    __asm__ __volatile__("msr fpcr, %0" : : "r"(s | (1ULL << 24))); /* FZ */
+    return s;
+}
+static void fp_leave(FpState s) { __asm__ __volatile__("msr fpcr, %0" : : "r"(s)); }
+#else
+typedef int FpState;
+static FpState fp_enter(void) { return 0; }
+static void fp_leave(FpState s) { (void)s; }
 #endif
 
 /* Speaker volts that map to 0 dBFS: about full power into 8 ohms (~27 V peak). */
@@ -188,10 +210,7 @@ static void run(LV2_Handle h, uint32_t n)
     double buf[OS_MAX];
     uint32_t i;
     int k;
-#ifdef HAVE_FTZ
-    const unsigned csr = _mm_getcsr();
-    _mm_setcsr(csr | 0x8040); /* flush denormals to zero */
-#endif
+    const FpState fp = fp_enter();
     if (p->port[PORT_LATENCY])
         *p->port[PORT_LATENCY] = (float)p->latency;
     if (!in || !out)
@@ -228,10 +247,7 @@ static void run(LV2_Handle h, uint32_t n)
         out[i] = (float)y;
     }
 done:
-#ifdef HAVE_FTZ
-    _mm_setcsr(csr);
-#endif
-    return;
+    fp_leave(fp);
 }
 
 static void deactivate(LV2_Handle h) { (void)h; }
