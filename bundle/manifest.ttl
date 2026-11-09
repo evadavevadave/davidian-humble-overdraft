@@ -1,0 +1,20 @@
+@prefix lv2:  <http://lv2plug.in/ns/lv2core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ui:   <http://lv2plug.in/ns/extensions/ui#> .
+
+<urn:davidian:humble-overdraft>
+	a lv2:Plugin ;
+	lv2:binary <humble_overdraft.dll> ;
+	rdfs:seeAlso <humble_overdraft.ttl> .
+
+# UI-BEGIN (CMake removes this block on platforms without a window layer)
+<urn:davidian:humble-overdraft>
+	ui:ui <urn:davidian:humble-overdraft#ui> .
+
+<urn:davidian:humble-overdraft#ui>
+	a ui:WindowsUI ;
+	ui:binary <humble_overdraft_ui.dll> ;
+	lv2:requiredFeature ui:parent ;
+	lv2:optionalFeature ui:resize , ui:idleInterface ;
+	lv2:extensionData ui:idleInterface .
+# UI-END

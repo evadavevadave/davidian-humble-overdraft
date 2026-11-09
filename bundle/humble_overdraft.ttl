@@ -1,0 +1,180 @@
+@prefix doap:  <http://usefulinc.com/ns/doap#> .
+@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix pprop: <http://lv2plug.in/ns/ext/port-props#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix units: <http://lv2plug.in/ns/extensions/units#> .
+
+<urn:davidian:humble-overdraft>
+	a lv2:Plugin , lv2:AmplifierPlugin ;
+	doap:name "Davidian Humble Overdraft" ;
+	doap:license <https://spdx.org/licenses/GPL-3.0-or-later> ;
+	rdfs:comment "Circuit model of the 1997 Humble Overdraft Specimen (rev 1.2) schematic: a two-channel tube guitar amplifier with four 12AX7 preamp stages, clean and overdrive tone stacks, a long-tailed-pair phase inverter and two EL34s in push-pull with presence and negative feedback. Optional speaker emulation. GPL-3.0-or-later. Made with generative AI (Claude Code); see AI_USAGE.md in the bundle." ;
+	lv2:minorVersion 0 ;
+	lv2:microVersion 0 ;
+	lv2:optionalFeature lv2:hardRTCapable ;
+	lv2:port [
+		a lv2:AudioPort , lv2:InputPort ;
+		lv2:index 0 ;
+		lv2:symbol "in" ;
+		lv2:name "In"
+	] , [
+		a lv2:AudioPort , lv2:OutputPort ;
+		lv2:index 1 ;
+		lv2:symbol "out" ;
+		lv2:name "Out"
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 2 ;
+		lv2:symbol "volume" ;
+		lv2:name "Clean Volume" ;
+		lv2:default 0.5 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 3 ;
+		lv2:symbol "treble" ;
+		lv2:name "Clean Treble" ;
+		lv2:default 0.5 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 4 ;
+		lv2:symbol "middle" ;
+		lv2:name "Clean Middle" ;
+		lv2:default 0.5 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 5 ;
+		lv2:symbol "bass" ;
+		lv2:name "Clean Bass" ;
+		lv2:default 0.5 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 6 ;
+		lv2:symbol "master" ;
+		lv2:name "Clean Master" ;
+		lv2:default 0.5 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 7 ;
+		lv2:symbol "drive" ;
+		lv2:name "OD Drive" ;
+		lv2:default 0.6 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 8 ;
+		lv2:symbol "od_treble" ;
+		lv2:name "OD Treble" ;
+		lv2:default 0.5 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 9 ;
+		lv2:symbol "od_middle" ;
+		lv2:name "OD Middle" ;
+		lv2:default 0.5 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 10 ;
+		lv2:symbol "od_bass" ;
+		lv2:name "OD Bass" ;
+		lv2:default 0.5 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 11 ;
+		lv2:symbol "od_level" ;
+		lv2:name "OD Level" ;
+		lv2:default 0.35 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 12 ;
+		lv2:symbol "od_trim" ;
+		lv2:name "OD Trim (internal)" ;
+		lv2:default 0.5 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 13 ;
+		lv2:symbol "presence" ;
+		lv2:name "Presence" ;
+		lv2:default 0.3 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 14 ;
+		lv2:symbol "overdrive" ;
+		lv2:name "Overdrive Channel" ;
+		lv2:default 0 ;
+		lv2:minimum 0 ;
+		lv2:maximum 1 ;
+		lv2:portProperty lv2:toggled , lv2:integer ;
+		lv2:scalePoint [ rdfs:label "Clean" ; rdf:value 0 ] , [ rdfs:label "Overdrive" ; rdf:value 1 ]
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 15 ;
+		lv2:symbol "cab" ;
+		lv2:name "Speaker Emulation" ;
+		lv2:default 1 ;
+		lv2:minimum 0 ;
+		lv2:maximum 1 ;
+		lv2:portProperty lv2:toggled , lv2:integer ;
+		lv2:scalePoint [ rdfs:label "Line" ; rdf:value 0 ] , [ rdfs:label "Cabinet" ; rdf:value 1 ]
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 16 ;
+		lv2:symbol "volts" ;
+		lv2:name "Volts at 0 dBFS" ;
+		lv2:default 1.0 ;
+		lv2:minimum 0.1 ;
+		lv2:maximum 10.0 ;
+		lv2:portProperty pprop:logarithmic
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 17 ;
+		lv2:symbol "output" ;
+		lv2:name "Output" ;
+		lv2:default 0.0 ;
+		lv2:minimum -24.0 ;
+		lv2:maximum 12.0 ;
+		units:unit units:db
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 18 ;
+		lv2:symbol "enabled" ;
+		lv2:name "Enabled" ;
+		lv2:default 1 ;
+		lv2:minimum 0 ;
+		lv2:maximum 1 ;
+		lv2:designation lv2:enabled ;
+		lv2:portProperty lv2:toggled
+	] , [
+		a lv2:ControlPort , lv2:OutputPort ;
+		lv2:index 19 ;
+		lv2:symbol "latency" ;
+		lv2:name "Latency" ;
+		lv2:minimum 0 ;
+		lv2:maximum 32 ;
+		lv2:designation lv2:latency ;
+		lv2:portProperty lv2:reportsLatency , lv2:integer ;
+		units:unit units:frame
+	] .
