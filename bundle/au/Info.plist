@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>humble_overdraft</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.davidian.humble-overdraft.au</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Humble Overdraft</string>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+	<key>CFBundleVersion</key>
+	<string>1.0.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.13</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright (C) 2026 Davidian. GPL-3.0-or-later.</string>
+	<key>AudioComponents</key>
+	<array>
+		<dict>
+			<key>name</key>
+			<string>Davidian: Humble Overdraft</string>
+			<key>description</key>
+			<string>Circuit-modelled two-channel tube guitar amplifier</string>
+			<key>factoryFunction</key>
+			<string>HumbleOverdraftAUFactory</string>
+			<key>type</key>
+			<string>aufx</string>
+			<key>subtype</key>
+			<string>Hmbo</string>
+			<key>manufacturer</key>
+			<string>Dvdn</string>
+			<key>version</key>
+			<integer>65536</integer>
+			<key>sandboxSafe</key>
+			<true/>
+			<key>tags</key>
+			<array>
+				<string>Effects</string>
+				<string>Distortion</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -1,12 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 Davidian
-# Linux / BSD / macOS / MinGW build of humble_overdraft.lv2 (plugin + GUI).
-# Windows with Visual Studio: use build.bat instead.
+# Linux / BSD / macOS / MinGW build of humble_overdraft.lv2 (plugin + GUI), and on macOS
+# also the Audio Unit, build/humble_overdraft.component.
+# Windows with Visual Studio (LV2 and VST3): use build.bat instead.
 #
-#   make            build the bundle in build/humble_overdraft.lv2
+#   make            build the bundles in build/
 #   make test       build and run the offline DSP test and the panel render
-#   make install    copy the bundle to the per-user LV2 folder
-#   make dist       zip the bundle with the docs into build/dist/
+#   make install    copy the bundles to the per-user plugin folders
+#   make dist       zip the bundles with the docs into build/dist/
 
 VERSION ?= dev
 UNAME   := $(shell uname -s)
@@ -30,6 +31,8 @@ ifeq ($(UNAME),Darwin)
   UI_LANG     := -x objective-c -fno-objc-arc
   UI_LIBS     := -framework Cocoa
   LV2DIR      ?= $(HOME)/Library/Audio/Plug-Ins/LV2
+  AUDIR       ?= $(HOME)/Library/Audio/Plug-Ins/Components
+  EXTRA       := au
 else ifneq (,$(findstring MINGW,$(UNAME)))
   PLATFORM    := windows-x64
   LIB_EXT     := .dll
@@ -56,9 +59,31 @@ DOCS    := LICENSE NOTICE.md AI_USAGE.md
 
 PLUGIN  := $(BUNDLE)/humble_overdraft$(LIB_EXT)
 UI      := $(BUNDLE)/humble_overdraft_ui$(LIB_EXT)
-DSP_SRC := src/plugin.c src/amp.h src/tube.h src/network.h src/oversample.h src/lv2_abi.h src/ports.h
+DSP_SRC := src/plugin.c src/engine.h src/amp.h src/tube.h src/network.h src/oversample.h src/lv2_abi.h src/ports.h
 
 all: $(PLUGIN) $(UI) $(BUNDLE)/manifest.ttl $(BUNDLE)/humble_overdraft.ttl $(addprefix $(BUNDLE)/,$(DOCS))
+
+# The Audio Unit (macOS): one bundle with the engine, the parameters and the same GUI.
+COMPONENT := build/humble_overdraft.component
+AU_BIN    := $(COMPONENT)/Contents/MacOS/humble_overdraft
+AU_LIBS   := -framework AudioToolbox -framework AudioUnit -framework CoreAudio -framework CoreFoundation -framework Cocoa
+ifneq (,$(EXTRA))
+all: $(EXTRA)
+endif
+
+au: $(AU_BIN) $(COMPONENT)/Contents/Info.plist $(addprefix $(COMPONENT)/Contents/Resources/,$(DOCS))
+
+$(AU_BIN): src/au/au.m src/ui/*.h $(DSP_SRC)
+	mkdir -p $(dir $@)
+	$(CC) $(COMMON) -x objective-c -fno-objc-arc $(CFLAGS) $< -o $@ -bundle $(LDFLAGS) $(AU_LIBS) -lm
+
+$(COMPONENT)/Contents/Info.plist: bundle/au/Info.plist
+	mkdir -p $(dir $@)
+	cp $< $@
+
+$(COMPONENT)/Contents/Resources/%: %
+	mkdir -p $(dir $@)
+	cp $< $@
 
 $(BUNDLE) build-test $(DISTDIR):
 	mkdir -p $@
@@ -96,15 +121,20 @@ install: all
 	mkdir -p "$(LV2DIR)"
 	rm -rf "$(LV2DIR)/humble_overdraft.lv2"
 	cp -R $(BUNDLE) "$(LV2DIR)/"
+ifneq (,$(EXTRA))
+	mkdir -p "$(AUDIR)"
+	rm -rf "$(AUDIR)/humble_overdraft.component"
+	cp -R $(COMPONENT) "$(AUDIR)/"
+endif
 
 dist: all | $(DISTDIR)
 	rm -rf $(DISTDIR)/$(DISTNAME) $(DISTDIR)/$(DISTNAME).zip
 	mkdir -p $(DISTDIR)/$(DISTNAME)
-	cp -R $(BUNDLE) README.md $(DOCS) $(DISTDIR)/$(DISTNAME)/
+	cp -R $(BUNDLE) $(if $(EXTRA),$(COMPONENT)) README.md $(DOCS) $(DISTDIR)/$(DISTNAME)/
 	cd $(DISTDIR) && zip -qr $(DISTNAME).zip $(DISTNAME)
 	@echo "Packaged $(DISTDIR)/$(DISTNAME).zip"
 
 clean:
 	rm -rf build build-test
 
-.PHONY: all test install dist clean
+.PHONY: all au test install dist clean
