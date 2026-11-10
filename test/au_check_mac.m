@@ -273,30 +273,45 @@ int main(int argc, char** argv)
         AudioUnitSetProperty(unit, kAudioUnitProperty_BypassEffect, kAudioUnitScope_Global, 0, &bypass, sizeof bypass);
 
         AudioUnitUninitialize(unit);
-        ok = set_format(1, 2) && AudioUnitInitialize(unit) == noErr && render(l, r, 2);
-        check("1 in / 2 out carries the same signal on both sides",
-              ok && !memcmp(l, r, sizeof l) && rms(l + N / 2, N / 2) > 1e-3);
+        {
+            const int fmt = set_format(1, 2);
+            const OSStatus init = fmt ? AudioUnitInitialize(unit) : -1;
+            const int rendered = init == noErr && render(l, r, 2);
+            ok = rendered && !memcmp(l, r, sizeof l) && rms(l + N / 2, N / 2) > 1e-3;
+            snprintf(label, sizeof label, "1 in / 2 out carries the same signal on both sides (format %d, init %d, render %d)",
+                     fmt, (int)init, rendered);
+            check(label, ok);
+        }
 
         /* Saved state */
-        AudioUnitSetParameter(unit, PORT_DRIVE, kAudioUnitScope_Global, 0, 0.9f, 0);
-        size = sizeof state;
-        check("saves its state (ClassInfo)",
-              AudioUnitGetProperty(unit, kAudioUnitProperty_ClassInfo, kAudioUnitScope_Global, 0, &state, &size) == noErr && state);
-        AudioUnitSetParameter(unit, PORT_DRIVE, kAudioUnitScope_Global, 0, 0.1f, 0);
-        check("restores it", state && AudioUnitSetProperty(unit, kAudioUnitProperty_ClassInfo, kAudioUnitScope_Global, 0,
-                                                           &state, sizeof state) == noErr
-                                 && fabsf(get_param(PORT_DRIVE) - 0.9f) < 1e-6f);
+        {
+            OSStatus get, set = -1;
+            AudioUnitSetParameter(unit, PORT_DRIVE, kAudioUnitScope_Global, 0, 0.9f, 0);
+            size = sizeof state;
+            get = AudioUnitGetProperty(unit, kAudioUnitProperty_ClassInfo, kAudioUnitScope_Global, 0, &state, &size);
+            snprintf(label, sizeof label, "saves its state (ClassInfo, status %d)", (int)get);
+            check(label, get == noErr && state);
+            AudioUnitSetParameter(unit, PORT_DRIVE, kAudioUnitScope_Global, 0, 0.1f, 0);
+            if (state)
+                set = AudioUnitSetProperty(unit, kAudioUnitProperty_ClassInfo, kAudioUnitScope_Global, 0, &state, sizeof state);
+            snprintf(label, sizeof label, "restores it (status %d, Drive %.2f)", (int)set, get_param(PORT_DRIVE));
+            check(label, set == noErr && fabsf(get_param(PORT_DRIVE) - 0.9f) < 1e-6f);
+        }
         if (state)
             CFRelease(state);
         AudioUnitSetParameter(unit, PORT_DRIVE, kAudioUnitScope_Global, 0, 0.6f, 0);
         AudioUnitSetParameter(unit, PORT_OVERDRIVE, kAudioUnitScope_Global, 0, 0.0f, 0);
 
         /* The Cocoa view */
-        size = sizeof vi;
-        memset(&vi, 0, sizeof vi);
-        ok = AudioUnitGetProperty(unit, kAudioUnitProperty_CocoaUI, kAudioUnitScope_Global, 0, &vi, &size) == noErr
-            && vi.mCocoaAUViewBundleLocation && vi.mCocoaAUViewClass[0];
-        check("offers a Cocoa view", ok);
+        {
+            OSStatus st;
+            size = sizeof vi;
+            memset(&vi, 0, sizeof vi);
+            st = AudioUnitGetProperty(unit, kAudioUnitProperty_CocoaUI, kAudioUnitScope_Global, 0, &vi, &size);
+            ok = st == noErr && vi.mCocoaAUViewBundleLocation && vi.mCocoaAUViewClass[0];
+            snprintf(label, sizeof label, "offers a Cocoa view (status %d)", (int)st);
+            check(label, ok);
+        }
         if (ok) {
             NSBundle* bundle = [NSBundle bundleWithURL:(NSURL*)vi.mCocoaAUViewBundleLocation];
             Class cls = [bundle classNamed:(NSString*)vi.mCocoaAUViewClass[0]];
