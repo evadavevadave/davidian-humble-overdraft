@@ -107,20 +107,22 @@ static int render(float* l, float* r, UInt32 out_ch)
     memset(&ts, 0, sizeof ts);
     ts.mFlags = kAudioTimeStampSampleTimeValid;
     for (in_pos = 0; in_pos < N; in_pos += BLOCK) {
+        /* N is not a multiple of BLOCK: the last block is shorter */
+        const UInt32 n = N - in_pos < BLOCK ? (UInt32)(N - in_pos) : BLOCK;
         AudioUnitRenderActionFlags flags = 0;
         UInt32 c;
         out.list.mNumberBuffers = out_ch;
         for (c = 0; c < out_ch; ++c) {
             out.list.mBuffers[c].mNumberChannels = 1;
-            out.list.mBuffers[c].mDataByteSize = BLOCK * sizeof(float);
+            out.list.mBuffers[c].mDataByteSize = n * sizeof(float);
             out.list.mBuffers[c].mData = NULL; /* let the unit supply the buffers */
         }
         ts.mSampleTime = in_pos;
-        if (AudioUnitRender(unit, &flags, &ts, 0, BLOCK, &out.list) != noErr)
+        if (AudioUnitRender(unit, &flags, &ts, 0, n, &out.list) != noErr)
             return 0;
-        memcpy(l + in_pos, out.list.mBuffers[0].mData, BLOCK * sizeof(float));
+        memcpy(l + in_pos, out.list.mBuffers[0].mData, n * sizeof(float));
         if (r && out_ch > 1)
-            memcpy(r + in_pos, out.list.mBuffers[1].mData, BLOCK * sizeof(float));
+            memcpy(r + in_pos, out.list.mBuffers[1].mData, n * sizeof(float));
     }
     return 1;
 }
