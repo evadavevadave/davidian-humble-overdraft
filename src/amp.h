@@ -1,8 +1,7 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
  * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
-/* Circuit model of the "1997 Humble Overdraft Specimen, Revision 1.2" schematic: a
- * two-channel amplifier with four 12AX7 preamp stages, a long-tailed-pair phase inverter
- * and two EL34s in push-pull. Component values and supply voltages are the schematic's;
+/* Circuit model of the reference schematic: a two-channel amplifier with four 12AX7
+ * preamp stages, a long-tailed-pair phase inverter and two EL34s in push-pull. Component values and supply voltages are the schematic's;
  * estimates that are not on the schematic are marked "Estimate".
  *
  * Signal path (schematic names):

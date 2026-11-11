@@ -1,6 +1,6 @@
 # Davidian Humble Overdraft
 
-A circuit-modelled guitar amplifier plugin (LV2, VST3 and Audio Unit), built from the schematic titled **"1997 Humble Overdraft Specimen, Revision 1.2"**: a two-channel tube amp with four 12AX7 preamp stages, separate clean and overdrive tone stacks, a long-tailed-pair phase inverter and two EL34s in push-pull, with presence and negative feedback.
+A circuit-modelled guitar amplifier plugin (LV2, VST3 and Audio Unit), built from a reference schematic: a two-channel tube amp with four 12AX7 preamp stages, separate clean and overdrive tone stacks, a long-tailed-pair phase inverter and two EL34s in push-pull, with presence and negative feedback.
 
 ![The GUI](docs/gui.png)
 

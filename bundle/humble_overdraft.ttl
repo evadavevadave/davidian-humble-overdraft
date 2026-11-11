@@ -9,7 +9,7 @@
 	a lv2:Plugin , lv2:AmplifierPlugin ;
 	doap:name "Davidian Humble Overdraft" ;
 	doap:license <https://spdx.org/licenses/GPL-3.0-or-later> ;
-	rdfs:comment "Circuit model of the 1997 Humble Overdraft Specimen (rev 1.2) schematic: a two-channel tube guitar amplifier with four 12AX7 preamp stages, clean and overdrive tone stacks, a long-tailed-pair phase inverter and two EL34s in push-pull with presence and negative feedback. Optional speaker emulation. GPL-3.0-or-later. Made with generative AI (Claude Code); see AI_USAGE.md in the bundle." ;
+	rdfs:comment "Circuit model of a two-channel tube guitar amplifier with four 12AX7 preamp stages, clean and overdrive tone stacks, a long-tailed-pair phase inverter and two EL34s in push-pull with presence and negative feedback. Optional speaker emulation. GPL-3.0-or-later. Made with generative AI (Claude Code); see AI_USAGE.md in the bundle." ;
 	lv2:minorVersion 0 ;
 	lv2:microVersion 0 ;
 	lv2:optionalFeature lv2:hardRTCapable ;

@@ -62,7 +62,7 @@ VST is a registered trademark of Steinberg Media Technologies GmbH. "VST3" names
 
 ## Circuit and reference sources
 
-- **Circuit:** the model follows the component values, topology and marked voltages of the schematic titled "1997 Humble Overdraft Specimen, Revision 1.2", supplied by Davidian. Component values and circuit topology are facts used to write an original simulation. The schematic image is not included in the bundle or in version control (`.gitignore` excludes `*.pdf`).
+- **Circuit:** the model follows the component values, topology and marked voltages of a reference schematic supplied by Davidian. Component values and circuit topology are facts used to write an original simulation. The schematic image is not included in the bundle or in version control (`.gitignore` excludes `*.pdf`).
 - **Tube models:** the plate-current equations are Norman Koren's published models. The 12AX7A parameters (fit by Tom Mitchell, 2001) and the EL34 parameters come from Koren's published parameter tables. Only the numbers are used.
-- **Names:** "Humble Overdraft" is the name printed on the schematic, and Davidian approved its use. No other amplifier maker's brand or model names are used in the plugin's name, URI, files or GUI, and Davidian is not affiliated with any amplifier maker.
+- **Names:** "Humble Overdraft" is Davidian's model name for this plugin. No other amplifier maker's brand or model names are used in the plugin's name, URI, files or GUI, and Davidian is not affiliated with any amplifier maker.
 - **GUI design:** original, in the Davidian house style. It does not copy any amplifier's logo, wordmark, lettering or panel artwork.

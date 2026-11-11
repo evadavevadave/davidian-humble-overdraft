@@ -1,4 +1,4 @@
-Ready-made builds of the **Davidian Humble Overdraft**, a two-channel 12AX7/EL34 valve amp modelled on the 1997 Humble Overdraft Specimen schematic, with its GUI. LV2 on every platform, VST3 on Windows and Audio Unit on macOS.
+Ready-made builds of the **Davidian Humble Overdraft**, a two-channel 12AX7/EL34 valve amp modelled from a reference schematic, with its GUI. LV2 on every platform, VST3 on Windows and Audio Unit on macOS.
 
 | Download | Contains | For |
 |---|---|---|

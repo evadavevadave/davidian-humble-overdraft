@@ -207,7 +207,7 @@ static void draw_background(Panel* p)
 
     /* Header */
     text_draw(&c, 30, 18, "DAVIDIAN HUMBLE OVERDRAFT", 20, 3.2f, 2.8f, COL_INK, 1);
-    text_draw(&c, 32, 46, "TWO-CHANNEL 12AX7 / EL34 TUBE AMPLIFIER - SPECIMEN REV 1.2", 7, 2.4f, 1.1f, COL_DIM, 1);
+    text_draw(&c, 32, 46, "TWO-CHANNEL 12AX7 / EL34 TUBE AMPLIFIER", 7, 2.4f, 1.1f, COL_DIM, 1);
     cv_line(&c, 30, 60, 680, 60, 1.2f, COL_AMBER, 0.55f);
     /* Readout window */
     cv_rrect(&c, 716, 14, 1044, 56, 6, 0x000000, 0.6f);
