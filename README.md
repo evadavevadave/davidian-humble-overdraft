@@ -2,6 +2,8 @@
 
 A circuit-modelled guitar amplifier plugin (LV2, VST3 and Audio Unit), built from a reference schematic: a two-channel tube amp with four 12AX7 preamp stages, separate clean and overdrive tone stacks, a long-tailed-pair phase inverter and two EL34s in push-pull, with presence and negative feedback.
 
+**A close model, not an exact copy.** It is a simulation of the circuit from its component values, not a sampled or measured amp, and some details are reasoned estimates (listed under [Estimates](#estimates)). It has not been compared side by side with a built unit, so expect it to sound close to the hardware rather than identical.
+
 ![The GUI](docs/gui.png)
 
 A mono amp (mono or stereo tracks work too), with the same GUI in every format. GPL-3.0-or-later.
@@ -88,7 +90,10 @@ Knobs read 0 to 10 and map to pot rotation with the tapers on the schematic (A =
 
 The Koren 12AX7A fit draws about 15% less current than the tubes measured for the schematic, which is within the normal spread of 12AX7s.
 
-### Estimates (not on the schematic)
+### Estimates
+
+These values are not on the schematic, so they are reasoned estimates:
+
 
 - Output transformer: 3.4k plate to plate into 8 ohms, low-frequency roll-off at 20 Hz, high-frequency roll-off at 16 kHz.
 - EL34 idle current 35 mA per tube (bias -37.7 V in the model), supply sag resistance 120 ohms.
@@ -155,6 +160,16 @@ CI also runs Steinberg's VST3 validator on the Windows build and Apple's `auval 
 
 GitHub Actions runs all of these on Windows, macOS, Linux x64 and Linux arm64 for every push (see `.github/workflows/build.yml`). Pushing a `v*` tag publishes a release with a zip for each platform.
 
+## Use of AI
+
+Made with generative AI (Claude Code), directed and reviewed by Davidian. See [AI_USAGE.md](AI_USAGE.md) for what the author and the AI each did, and what has and hasn't been checked.
+
+## References
+
+- Triode and pentode models: Norman Koren, *Improved VT models for SPICE simulations* (1996, revised 2003).
+- Trapezoidal integration and nodal analysis of the passive networks: standard circuit simulation (e.g. Vlach and Singhal, *Computer Methods for Circuit Analysis and Design*).
+- Polyphase Kaiser-windowed sinc oversampling: standard multirate DSP (e.g. Lyons, *Understanding Digital Signal Processing*).
+
 ## Licence
 
-GPL-3.0-or-later. See [LICENSE](LICENSE), [NOTICE.md](NOTICE.md) and [AI_USAGE.md](AI_USAGE.md). Made with generative AI (Claude Code).
+GPL-3.0-or-later. See [LICENSE](LICENSE), [NOTICE.md](NOTICE.md) and [AI_USAGE.md](AI_USAGE.md).
